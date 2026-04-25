@@ -52,6 +52,7 @@ Copyright &copy; 2026 aws-outbound-jwt-proxy contributors
 nav = [
   { "Overview" = "index.md" },
   { "Install" = "install.md" },
+  { "Container image" = "docker.md" },
   { "Quick start" = "quick-start.md" },
   { "Configuration" = "configuration.md" },
   { "Dynamic audience" = "dynamic-audience.md" },

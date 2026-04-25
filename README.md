@@ -63,6 +63,14 @@ See the [Quick start guide](https://gp42.github.io/aws-outbound-jwt-proxy/quick-
 
 All flags can also be set via environment variables (`--upstream-host` ↔ `UPSTREAM_HOST`). See the [Configuration reference](https://gp42.github.io/aws-outbound-jwt-proxy/configuration/) for the full flag list, AWS credential handling, upstream-host resolution modes, and TLS setup.
 
+## Container image
+
+```sh
+docker pull gp42/aws-outbound-jwt-proxy:latest
+```
+
+See the [Container image guide](https://gp42.github.io/aws-outbound-jwt-proxy/docker/) for registries (Docker Hub + GHCR), supported tags, and verification.
+
 ## License
 
 See [LICENSE](./LICENSE).

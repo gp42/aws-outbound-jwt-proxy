@@ -1,0 +1,4 @@
+# Keep the build context tiny: only the staged release binaries are needed.
+*
+!dist/
+!dist/**
