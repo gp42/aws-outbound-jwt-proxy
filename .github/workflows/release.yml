@@ -366,11 +366,15 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Sync Docker Hub Overview from docs/docker.md
+        # Docker Hub access tokens cannot edit the repository description —
+        # the description API only accepts the account password. We use a
+        # separate DOCKERHUB_PASSWORD secret here while DOCKERHUB_TOKEN (a
+        # push-scoped PAT) is still used for image pushes above.
         if: needs.version.outputs.is_prerelease == 'false'
         uses: peter-evans/dockerhub-description@1b9a80c056b620d92cedb9d9b5a223409c68ddfa # v5.0.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
           repository: gp42/aws-outbound-jwt-proxy
           short-description: AWS outbound identity federation — sign outbound HTTP requests with short-lived JWTs from AWS STS.
           readme-filepath: ./docs/docker.md
