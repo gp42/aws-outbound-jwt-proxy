@@ -1,3 +1,7 @@
+---
+icon: lucide/container
+---
+
 # Container image
 
 `aws-outbound-jwt-proxy` is published as a multi-architecture container image on every GitHub Release.
