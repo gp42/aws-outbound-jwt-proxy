@@ -18,6 +18,7 @@ icon: lucide/life-buoy
    - `transport` - the proxy could not reach STS (network/DNS/credentials chain problem).
 3. Confirm the proxy's credentials chain resolves: set `AWS_REGION`, check `AWS_PROFILE` / instance role.
 4. Confirm the STS trust policy grants `sts:GetWebIdentityToken` for the audience(s) the proxy is requesting.
+5. Confirm **outbound identity federation is enabled on the AWS account**. It is opt-in per account; if disabled, every `GetWebIdentityToken` call returns `AccessDenied` regardless of IAM policy. An account admin enables it via the IAM console (*Identity providers* → *Outbound federation* → **Enable**), or org-wide from the AWS Organizations management account. See the [AWS outbound identity federation docs](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_outbound.html).
 
 ## `502 Bad Gateway` without `token unavailable` body
 
