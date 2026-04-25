@@ -26,10 +26,10 @@ make uninstall-hooks
 <optional footer(s)>
 ```
 
-- **type** — required, lowercase, one of the allowed list below.
-- **scope** — optional, lowercase letters/digits with `-`, `_`, `.`, `/`.
-- **!** — optional breaking-change marker after type/scope.
-- **subject** — required, at least one character on the same line.
+- **type** - required, lowercase, one of the allowed list below.
+- **scope** - optional, lowercase letters/digits with `-`, `_`, `.`, `/`.
+- **!** - optional breaking-change marker after type/scope.
+- **subject** - required, at least one character on the same line.
 - **`BREAKING CHANGE: …`** footer also signals a breaking change.
 
 ## Allowed types

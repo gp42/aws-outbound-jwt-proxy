@@ -1,6 +1,6 @@
 # Releasing
 
-Releases are produced exclusively by the [`release` GitHub Actions workflow](.github/workflows/release.yml). There is no automatic release on merge — a maintainer must dispatch the workflow.
+Releases are produced exclusively by the [`release` GitHub Actions workflow](.github/workflows/release.yml). There is no automatic release on merge - a maintainer must dispatch the workflow.
 
 ## Branch determines release kind
 
@@ -35,19 +35,19 @@ For every release:
 
 ## Container image publishing
 
-The `docker` job runs at the end of the release workflow and reuses the linux binaries that were already built and uploaded by the `build` matrix — it does not recompile. Each binary is verified against the `SHA256SUMS` file attached to the GitHub Release before it enters the image, so the bytes shipped to the registries are guaranteed to match the bytes on the Release page.
+The `docker` job runs at the end of the release workflow and reuses the linux binaries that were already built and uploaded by the `build` matrix - it does not recompile. Each binary is verified against the `SHA256SUMS` file attached to the GitHub Release before it enters the image, so the bytes shipped to the registries are guaranteed to match the bytes on the Release page.
 
 ### One-time setup
 
 1. Create the Docker Hub repository `gp42/aws-outbound-jwt-proxy` and a push-scoped access token.
 2. Add repository secrets:
-   - `DOCKERHUB_USERNAME` — Docker Hub username.
-   - `DOCKERHUB_TOKEN` — the push-scoped access token created above (used for image pushes).
-   - `DOCKERHUB_PASSWORD` — the Docker Hub account password. Required by the "Sync Docker Hub Overview" step: the Docker Hub API rejects access tokens for description edits and only accepts the account password.
+   - `DOCKERHUB_USERNAME` - Docker Hub username.
+   - `DOCKERHUB_TOKEN` - the push-scoped access token created above (used for image pushes).
+   - `DOCKERHUB_PASSWORD` - the Docker Hub account password. Required by the "Sync Docker Hub Overview" step: the Docker Hub API rejects access tokens for description edits and only accepts the account password.
 3. Set the repository variable `DOCKER_PUBLISH_ENABLED=true` to enable the `docker` job. (When unset, the release workflow runs as before and the `docker` job is skipped.)
 4. After the first publish, link the auto-created GHCR package to this repository and set its visibility to public.
 
-The GHCR push uses the workflow's `GITHUB_TOKEN` with `packages: write` — no extra secret is required.
+The GHCR push uses the workflow's `GITHUB_TOKEN` with `packages: write` - no extra secret is required.
 
 ### If the docker job fails
 
@@ -82,7 +82,7 @@ The next version is computed from [Conventional Commits](COMMIT_CONVENTIONS.md) 
 | `fix:` / `perf:` / others | patch |
 | `…!:` or `BREAKING CHANGE:` footer | major |
 
-If there are no Conventional Commits since the last tag, the workflow fails — there is nothing to release.
+If there are no Conventional Commits since the last tag, the workflow fails - there is nothing to release.
 
 ## Common situations
 

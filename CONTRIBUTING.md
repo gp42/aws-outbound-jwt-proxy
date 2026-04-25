@@ -73,7 +73,7 @@ Branch names are not enforced, but keeping a `<type>/<short-description>` shape 
 
 ### 5. Commit
 
-Every commit message must follow [Conventional Commits](COMMIT_CONVENTIONS.md). The hook will reject anything that doesn't, and bypassing it with `--no-verify` will hurt the next version bump — so don't.
+Every commit message must follow [Conventional Commits](COMMIT_CONVENTIONS.md). The hook will reject anything that doesn't, and bypassing it with `--no-verify` will hurt the next version bump - so don't.
 
 Examples:
 
@@ -83,7 +83,7 @@ fix: handle empty STS response
 docs(contributing): clarify branch naming
 ```
 
-Squashing your local fixup commits before pushing is appreciated but not required — the maintainers can handle this at merge time.
+Squashing your local fixup commits before pushing is appreciated but not required - the maintainers can handle this at merge time.
 
 ### 6. Push and open a pull request
 
@@ -99,7 +99,7 @@ Then open a PR against `gp42/aws-outbound-jwt-proxy:main`. In the description:
 
 ## Reviewing and merging
 
-- A maintainer will review and may request changes. Push additional commits to the same branch — do not force-push unless asked.
+- A maintainer will review and may request changes. Push additional commits to the same branch - do not force-push unless asked.
 - CI must be green before merge.
 - Merges land via squash-merge. The squash commit message is what shows up in `git log`, so it will be edited to be a clean Conventional Commit.
 
@@ -118,7 +118,7 @@ Do **not** open a public issue for security reports. Email the maintainer (see t
 
 ## Releases
 
-Cutting releases is documented in [RELEASING.md](RELEASING.md). Contributors don't need to do anything special — your merged commits become part of the next dispatched release.
+Cutting releases is documented in [RELEASING.md](RELEASING.md). Contributors don't need to do anything special - your merged commits become part of the next dispatched release.
 
 ## License
 
