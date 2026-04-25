@@ -42,7 +42,8 @@ The `docker` job runs at the end of the release workflow and reuses the linux bi
 1. Create the Docker Hub repository `gp42/aws-outbound-jwt-proxy` and a push-scoped access token.
 2. Add repository secrets:
    - `DOCKERHUB_USERNAME` — Docker Hub username.
-   - `DOCKERHUB_TOKEN` — the access token created above.
+   - `DOCKERHUB_TOKEN` — the push-scoped access token created above (used for image pushes).
+   - `DOCKERHUB_PASSWORD` — the Docker Hub account password. Required by the "Sync Docker Hub Overview" step: the Docker Hub API rejects access tokens for description edits and only accepts the account password.
 3. Set the repository variable `DOCKER_PUBLISH_ENABLED=true` to enable the `docker` job. (When unset, the release workflow runs as before and the `docker` job is skipped.)
 4. After the first publish, link the auto-created GHCR package to this repository and set its visibility to public.
 
