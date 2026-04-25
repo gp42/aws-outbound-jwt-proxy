@@ -5,6 +5,9 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
+    commit-message:
+      prefix: "fix"
+      include: "scope"
     groups:
       go-deps:
         patterns:
@@ -17,6 +20,9 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
+    commit-message:
+      prefix: "fix"
+      include: "scope"
     groups:
       actions:
         patterns:
