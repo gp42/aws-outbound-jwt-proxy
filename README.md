@@ -7,7 +7,7 @@
 [![GHCR](https://img.shields.io/badge/ghcr.io-gp42%2Faws--outbound--jwt--proxy-2088FF?logo=github)](https://github.com/gp42/aws-outbound-jwt-proxy/pkgs/container/aws-outbound-jwt-proxy)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-**Your AWS workload needs to call a third-party API that wants a JWT, not an AWS SigV4 signature. This proxy bridges that gap** — implementing [AWS outbound identity federation](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_outbound.html) by signing outbound HTTP requests with short-lived JSON Web Tokens issued by AWS STS, so applications never touch long-term API keys.
+A proxy for AWS workloads that call third-party APIs expecting a JWT instead of AWS SigV4. It implements [AWS outbound identity federation](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_outbound.html): outbound HTTP requests are signed with short-lived JSON Web Tokens issued by AWS STS, so applications do not need to manage long-term API keys.
 
 ## Documentation
 
@@ -25,9 +25,9 @@ The Markdown sources live under [`docs/`](./docs).
 
 For contributors and maintainers:
 
-- [Contributing](./CONTRIBUTING.md) — fork, branch, test, open a PR
-- [Commit conventions](./COMMIT_CONVENTIONS.md) — Conventional Commits + commit-msg hook
-- [Releasing](./RELEASING.md) — how the GitHub Actions release workflow works
+- [Contributing](./CONTRIBUTING.md) - fork, branch, test, open a PR
+- [Commit conventions](./COMMIT_CONVENTIONS.md) - Conventional Commits + commit-msg hook
+- [Releasing](./RELEASING.md) - how the GitHub Actions release workflow works
 
 ## What it does
 
@@ -81,9 +81,9 @@ See the [quick start](https://ops42.org/aws-outbound-jwt-proxy/quick-start/#what
 
 ## Why not …?
 
-- **IAM Roles Anywhere / SigV4** — works only when the third party speaks AWS SigV4. Most SaaS APIs want OIDC/JWT.
-- **Direct OIDC from the app** — pushes STS calls, token caching, and refresh logic into every service. The proxy keeps that out of application code.
-- **aws-vault / static API keys** — long-lived secrets to rotate and leak. STS-issued JWTs are short-lived and scoped per audience.
+- **IAM Roles Anywhere / SigV4** - works only when the third party speaks AWS SigV4. Most SaaS APIs want OIDC/JWT.
+- **Direct OIDC from the app** - pushes STS calls, token caching, and refresh logic into every service. The proxy keeps that out of application code.
+- **aws-vault / static API keys** - long-lived secrets to rotate and leak. STS-issued JWTs are short-lived and scoped per audience.
 
 ## Quick start
 

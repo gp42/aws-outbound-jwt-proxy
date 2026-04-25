@@ -34,7 +34,7 @@ docker run --rm \
   gp42/aws-outbound-jwt-proxy:latest
 ```
 
-All proxy flags can also be set via environment variables — see the [Configuration reference](https://ops42.org/aws-outbound-jwt-proxy/configuration/).
+All proxy flags can also be set via environment variables - see the [Configuration reference](https://ops42.org/aws-outbound-jwt-proxy/configuration/).
 
 ## Supported platforms
 
@@ -43,7 +43,7 @@ Each tag resolves to a multi-arch manifest list covering:
 - `linux/amd64`
 - `linux/arm64`
 
-`darwin` images are not published — use the [binary release](https://ops42.org/aws-outbound-jwt-proxy/install/) for macOS.
+`darwin` images are not published - use the [binary release](https://ops42.org/aws-outbound-jwt-proxy/install/) for macOS.
 
 ## Tag policy
 
@@ -84,4 +84,4 @@ docker inspect --format '{{json .Config.Labels}}' gp42/aws-outbound-jwt-proxy:vX
 ## Source
 
 - [Dockerfile](https://github.com/gp42/aws-outbound-jwt-proxy/blob/main/Dockerfile)
-- [Release workflow](https://github.com/gp42/aws-outbound-jwt-proxy/blob/main/.github/workflows/release.yml) — the `docker` job builds and pushes images using the same binaries that are attached to the GitHub Release.
+- [Release workflow](https://github.com/gp42/aws-outbound-jwt-proxy/blob/main/.github/workflows/release.yml) - the `docker` job builds and pushes images using the same binaries that are attached to the GitHub Release.
