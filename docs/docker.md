@@ -10,7 +10,7 @@ icon: lucide/container
 
 The proxy implements [AWS outbound identity federation](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_outbound.html). Instead of applications managing long-term API keys or passwords for third-party services, the proxy obtains a short-lived JSON Web Token from AWS STS on the workload's behalf and injects it into outgoing requests. The external service verifies the JWT against AWS's public OIDC discovery keys (signature, expiration, audience, and subject) before granting access. Token acquisition, caching, and renewal are transparent to the application.
 
-See the [project overview](index.md) for the full picture.
+See the [project overview](https://ops42.org/aws-outbound-jwt-proxy/) for the full picture.
 
 ## Registries
 
@@ -34,7 +34,7 @@ docker run --rm \
   gp42/aws-outbound-jwt-proxy:latest
 ```
 
-All proxy flags can also be set via environment variables — see the [Configuration reference](configuration.md).
+All proxy flags can also be set via environment variables — see the [Configuration reference](https://ops42.org/aws-outbound-jwt-proxy/configuration/).
 
 ## Supported platforms
 
@@ -43,7 +43,7 @@ Each tag resolves to a multi-arch manifest list covering:
 - `linux/amd64`
 - `linux/arm64`
 
-`darwin` images are not published — use the [binary release](install.md) for macOS.
+`darwin` images are not published — use the [binary release](https://ops42.org/aws-outbound-jwt-proxy/install/) for macOS.
 
 ## Tag policy
 
