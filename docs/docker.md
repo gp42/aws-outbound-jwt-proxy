@@ -1,6 +1,16 @@
+---
+icon: lucide/container
+---
+
 # Container image
 
 `aws-outbound-jwt-proxy` is published as a multi-architecture container image on every GitHub Release.
+
+## What it does
+
+The proxy implements [AWS outbound identity federation](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_outbound.html). Instead of applications managing long-term API keys or passwords for third-party services, the proxy obtains a short-lived JSON Web Token from AWS STS on the workload's behalf and injects it into outgoing requests. The external service verifies the JWT against AWS's public OIDC discovery keys (signature, expiration, audience, and subject) before granting access. Token acquisition, caching, and renewal are transparent to the application.
+
+See the [project overview](index.md) for the full picture.
 
 ## Registries
 
