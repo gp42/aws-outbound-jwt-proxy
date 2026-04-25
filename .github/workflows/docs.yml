@@ -4,8 +4,9 @@ on:
     branches:
       - master
       - main
-    paths-ignore:
-      - ".github/dependabot.yml"
+    paths:
+      - "docs/**"
+      - ".github/workflows/docs.yml"
 permissions:
   contents: read
   pages: write
