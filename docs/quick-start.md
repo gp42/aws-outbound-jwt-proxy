@@ -6,6 +6,10 @@ icon: lucide/rocket
 
 This walkthrough runs the proxy against a local echo upstream so you can see the injected `Authorization: Bearer <jwt>` end-to-end, and inspect a real token minted by AWS STS.
 
+## Prerequisite: outbound federation enabled on the account
+
+Outbound identity federation is opt-in per AWS account. If it has not been enabled, `sts:GetWebIdentityToken` returns `AccessDenied` regardless of IAM permissions. An account administrator can enable it via the IAM console (*Identity providers* → *Outbound federation* → **Enable**), or for an AWS Organization across member accounts from the management account. See the [AWS docs](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_outbound.html) for the full procedure.
+
 ## 1. Set up AWS credentials
 
 The proxy uses the [default AWS SDK credentials chain](https://docs.aws.amazon.com/sdkref/latest/guide/standardized-credentials.html) (env vars, `~/.aws/config`/`credentials`, instance/pod role, etc.). For this walkthrough, any credentials that can call `sts:GetWebIdentityToken` work - e.g. an IAM user with a short-lived access key, or an assumed role.

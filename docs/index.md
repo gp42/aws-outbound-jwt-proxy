@@ -21,6 +21,17 @@ The proxy handles token acquisition, caching, and renewal transparently, so appl
 
 Tokens are cached per audience set and reused until they near expiry, so the first request per unique audience set incurs a single STS round-trip while subsequent requests are served from memory. If token acquisition fails, the proxy returns `502 Bad Gateway` and does not forward the request upstream.
 
+## Prerequisite: enable outbound federation on the account
+
+Outbound identity federation is **opt-in per AWS account**. Until it is enabled, `sts:GetWebIdentityToken` returns `AccessDenied` no matter what IAM permissions the calling principal holds.
+
+Enable it once, as an administrator of the target account:
+
+- **IAM console:** *Identity providers* → *Outbound federation* → **Enable**.
+- **AWS Organizations:** the management account can enable outbound federation across member accounts via *Services* → *IAM* → *Outbound federation*.
+
+After enabling, grant the calling principal `sts:GetWebIdentityToken` for the audiences it will use. See the [AWS outbound identity federation docs](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_outbound.html) for the full enablement and policy reference.
+
 ## Use cases
 
 - Authenticating AWS workloads to SaaS platforms and external APIs.
