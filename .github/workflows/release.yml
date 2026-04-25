@@ -227,3 +227,169 @@ jobs:
             release/aws-outbound-jwt-proxy-*
             release/SHA256SUMS
           fail_on_unmatched_files: true
+
+  docker:
+    name: publish container image
+    runs-on: ubuntu-latest
+    needs:
+      - version
+      - build
+      - publish
+    if: vars.DOCKER_PUBLISH_ENABLED == 'true'
+    permissions:
+      contents: read
+      packages: write
+    env:
+      IMAGE_DOCKERHUB: docker.io/gp42/aws-outbound-jwt-proxy
+      IMAGE_GHCR: ghcr.io/gp42/aws-outbound-jwt-proxy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Validate Docker Hub credentials present
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          if [ -z "${DOCKERHUB_USERNAME}" ] || [ -z "${DOCKERHUB_TOKEN}" ]; then
+            echo "::error::DOCKERHUB_USERNAME / DOCKERHUB_TOKEN secrets are not set; cannot publish image"
+            exit 1
+          fi
+
+      - name: Download linux/amd64 artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: aws-outbound-jwt-proxy-${{ needs.version.outputs.version }}-linux-amd64
+          path: artifacts/linux-amd64
+
+      - name: Download linux/arm64 artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: aws-outbound-jwt-proxy-${{ needs.version.outputs.version }}-linux-arm64
+          path: artifacts/linux-arm64
+
+      - name: Stage build context
+        env:
+          VERSION: ${{ needs.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist/linux/amd64 dist/linux/arm64
+          cp "artifacts/linux-amd64/aws-outbound-jwt-proxy-${VERSION}-linux-amd64" dist/linux/amd64/aws-outbound-jwt-proxy
+          cp "artifacts/linux-arm64/aws-outbound-jwt-proxy-${VERSION}-linux-arm64" dist/linux/arm64/aws-outbound-jwt-proxy
+          chmod +x dist/linux/amd64/aws-outbound-jwt-proxy dist/linux/arm64/aws-outbound-jwt-proxy
+          ls -la dist/linux/amd64 dist/linux/arm64
+
+      - name: Verify binaries against the GitHub Release SHA256SUMS
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ needs.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          # Pull the SHA256SUMS the publish job just attached to the GitHub Release;
+          # this is the canonical record of what the release ships.
+          gh release download "${VERSION}" --pattern SHA256SUMS --dir release-sums --repo "${{ github.repository }}"
+          # Verify our staged binaries against it. --ignore-missing lets us match the
+          # two linux entries without needing the darwin binary present here.
+          (
+            cd release-sums
+            ln -sf "../artifacts/linux-amd64/aws-outbound-jwt-proxy-${VERSION}-linux-amd64" .
+            ln -sf "../artifacts/linux-arm64/aws-outbound-jwt-proxy-${VERSION}-linux-arm64" .
+            sha256sum -c SHA256SUMS --ignore-missing
+          )
+
+      - name: Compute floating-tag fragments
+        id: vfrag
+        env:
+          VERSION: ${{ needs.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          # VERSION looks like vX.Y.Z or vX.Y.Z-rc.N. We need the "vX" and "vX.Y"
+          # forms only for stable releases (the metadata-action enable= flag
+          # handles the gating; we just compute the strings unconditionally).
+          base="${VERSION%%-*}"          # strip any -rc.N suffix → vX.Y.Z
+          major="${base%%.*}"            # vX
+          minor="${base%.*}"             # vX.Y
+          echo "major=${major}" >> "$GITHUB_OUTPUT"
+          echo "minor=${minor}" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Log in to GHCR
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute image metadata
+        id: meta
+        uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf # v6.0.0
+        with:
+          images: |
+            ${{ env.IMAGE_DOCKERHUB }}
+            ${{ env.IMAGE_GHCR }}
+          # Tags are computed by hand because the workflow is dispatched (no
+          # release/tag event) and we need to preserve the leading "v" that
+          # the rest of the project uses for tag names.
+          tags: |
+            type=raw,value=${{ needs.version.outputs.version }}
+            type=raw,value=${{ steps.vfrag.outputs.minor }},enable=${{ needs.version.outputs.is_prerelease == 'false' }}
+            type=raw,value=${{ steps.vfrag.outputs.major }},enable=${{ needs.version.outputs.is_prerelease == 'false' }}
+            type=raw,value=latest,enable=${{ needs.version.outputs.is_prerelease == 'false' }}
+          flavor: |
+            latest=false
+          labels: |
+            org.opencontainers.image.title=aws-outbound-jwt-proxy
+            org.opencontainers.image.version=${{ needs.version.outputs.version }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.licenses=MIT
+
+      - name: Build and push multi-arch image
+        id: build
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          provenance: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Sync Docker Hub Overview from docs/docker.md
+        if: needs.version.outputs.is_prerelease == 'false'
+        uses: peter-evans/dockerhub-description@1b9a80c056b620d92cedb9d9b5a223409c68ddfa # v5.0.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: gp42/aws-outbound-jwt-proxy
+          short-description: AWS outbound identity federation — sign outbound HTTP requests with short-lived JWTs from AWS STS.
+          readme-filepath: ./docs/docker.md
+
+      - name: Summary
+        env:
+          DIGEST: ${{ steps.build.outputs.digest }}
+          TAGS: ${{ steps.meta.outputs.tags }}
+        run: |
+          {
+            echo "### Container image"
+            echo ""
+            echo "| field | value |"
+            echo "| --- | --- |"
+            echo "| manifest digest | \`${DIGEST}\` |"
+            echo ""
+            echo "**Pushed tags:**"
+            echo ""
+            echo '```'
+            echo "${TAGS}"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
