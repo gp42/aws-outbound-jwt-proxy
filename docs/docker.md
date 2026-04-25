@@ -71,31 +71,6 @@ Inspect with:
 docker inspect --format '{{json .Config.Labels}}' gp42/aws-outbound-jwt-proxy:vX.Y.Z | jq
 ```
 
-## Verifying an image
-
-The binary inside a published image is byte-identical to the corresponding `aws-outbound-jwt-proxy-<version>-linux-<arch>` asset attached to the [GitHub Release](https://github.com/gp42/aws-outbound-jwt-proxy/releases). To verify:
-
-```sh
-# 1. Extract the binary from the image.
-ID=$(docker create gp42/aws-outbound-jwt-proxy:vX.Y.Z)
-docker cp "$ID":/usr/local/bin/aws-outbound-jwt-proxy ./aws-outbound-jwt-proxy
-docker rm "$ID"
-
-# 2. Compare against the SHA256SUMS file from the GitHub Release.
-curl -sLO https://github.com/gp42/aws-outbound-jwt-proxy/releases/download/vX.Y.Z/SHA256SUMS
-sha256sum aws-outbound-jwt-proxy
-grep "linux-$(uname -m | sed s/x86_64/amd64/ | sed s/aarch64/arm64/)" SHA256SUMS
-```
-
-The hashes MUST match.
-
-You can also confirm both registries serve the same digest:
-
-```sh
-docker buildx imagetools inspect docker.io/gp42/aws-outbound-jwt-proxy:vX.Y.Z
-docker buildx imagetools inspect ghcr.io/gp42/aws-outbound-jwt-proxy:vX.Y.Z
-```
-
 ## Source
 
 - [Dockerfile](https://github.com/gp42/aws-outbound-jwt-proxy/blob/main/Dockerfile)
