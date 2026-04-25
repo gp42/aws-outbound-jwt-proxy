@@ -34,6 +34,12 @@ site_url = "https://gp42.github.io/aws-outbound-jwt-proxy/"
 repo_url = "https://github.com/gp42/aws-outbound-jwt-proxy"
 repo_name = "gp42/aws-outbound-jwt-proxy"
 
+# Content-action URL prefixes. Markdown sources live under docs/, so the
+# default (which assumes the docs root is the repo root) produces 404s
+# for the edit and view-source buttons. These prefixes restore them.
+edit_uri = "edit/main/docs/"
+view_uri = "blob/main/docs/"
+
 # The copyright notice appears in the page footer and can contain an HTML
 # fragment.
 #
