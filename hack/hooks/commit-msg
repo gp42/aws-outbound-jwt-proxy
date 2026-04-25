@@ -1,0 +1,52 @@
+#!/bin/sh
+# Conventional Commits commit-msg hook.
+# Rejects commit messages that do not match the Conventional Commits 1.0.0 format.
+# Install via: make install-hooks
+# Bypass (discouraged): git commit --no-verify
+
+set -eu
+
+msg_file="$1"
+first_line="$(sed -n '1p' "$msg_file")"
+
+# Allow merge and revert commits — git generates these and they are not
+# expected to follow Conventional Commits.
+case "$first_line" in
+	'Merge '*|'Revert "'*|'fixup! '*|'squash! '*)
+		exit 0
+		;;
+esac
+
+# Allowed types — keep in sync with docs/commit-conventions.md.
+allowed_types='feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert'
+
+# Pattern: type(optional-scope)!?: subject
+#   type:    one of allowed_types
+#   scope:   optional, lowercase letters/digits/_/-/./ inside parens
+#   !:       optional breaking-change marker
+#   :<sp>:   literal colon + space
+#   subject: at least one character
+pattern="^(${allowed_types})(\\([a-z0-9._/-]+\\))?!?: .+"
+
+if printf '%s' "$first_line" | grep -Eq "$pattern"; then
+	exit 0
+fi
+
+cat >&2 <<EOF
+✗ commit message does not follow Conventional Commits
+
+   got: ${first_line}
+
+   expected: <type>(<optional-scope>)<!?>: <subject>
+
+   allowed types: ${allowed_types}
+
+   examples:
+     feat(proxy): add audience override
+     fix: handle empty STS response
+     refactor!: drop legacy header passthrough
+     chore(deps): bump aws-sdk-go-v2
+
+   bypass (discouraged): git commit --no-verify
+EOF
+exit 1

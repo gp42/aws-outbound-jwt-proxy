@@ -1,0 +1,48 @@
+# --- build outputs -----------------------------------------------------------
+/bin/
+/dist/
+# stray binary built at repo root by `go build` without -o
+/aws-outbound-jwt-proxy
+# echo-upstream helper binary built from hack/echo-upstream
+/echo-upstream
+
+# --- go test / coverage ------------------------------------------------------
+*.test
+*.out
+*.cov
+coverage.html
+coverage.txt
+
+# --- generated docs site (Zensical) -----------------------------------------
+/site/
+/.cache/
+
+# --- environment / secrets ---------------------------------------------------
+.env
+.env.local
+.env.*.local
+.venv/
+
+# --- macOS -------------------------------------------------------------------
+.DS_Store
+
+# --- VS Code -----------------------------------------------------------------
+# Track shared settings/recommendations if a maintainer opts in by force-adding,
+# but ignore everything personal by default.
+.vscode/
+*.code-workspace
+.history/
+
+# --- JetBrains (GoLand, IntelliJ, etc.) --------------------------------------
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# --- Vim / Emacs / misc editor swap files -----------------------------------
+*.swp
+*.swo
+*~
+.#*
+\#*#
