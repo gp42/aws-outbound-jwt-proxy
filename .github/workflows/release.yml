@@ -1,4 +1,4 @@
-name: release
+name: Release
 
 # Manual-only release workflow.
 #   - Dispatched on `main`            → stable release (marked latest)
@@ -17,6 +17,12 @@ jobs:
   version:
     name: compute version
     runs-on: ubuntu-latest
+    # semantic-release (wrapped by huggingface/semver-release-action) does
+    # `git push --dry-run` to probe push perms even when dryRun: true,
+    # so the job needs contents:write — without it the action fails with
+    # "Permission to <repo> denied to github-actions[bot]" / 403.
+    permissions:
+      contents: write
     outputs:
       version: ${{ steps.semver.outputs.tag }}
       is_prerelease: ${{ steps.kind.outputs.is_prerelease }}
