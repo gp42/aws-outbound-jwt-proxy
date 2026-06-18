@@ -6,7 +6,9 @@ updates:
     schedule:
       interval: weekly
     commit-message:
-      prefix: "chore"
+      # Go modules are compiled into the shipped binary, so a dependency bump
+      # changes the released artifact -> fix(deps): triggers a patch release.
+      prefix: "fix"
       include: "scope"
     groups:
       go-deps:
